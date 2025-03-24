@@ -12,6 +12,7 @@
 #define PIND6       6 
 #define PIND7       7  
 #define BUTTONPIN   A0
+#define BUZZER_PIN   2
 
 #include <Wire.h>
 #include <Arduino.h>
@@ -51,6 +52,8 @@ void check(SoftwareSerial hc12, LiquidCrystal *lcd);
 
 void ReturnToMenu(LiquidCrystal *lcd);
 
+void playSendTone();
 
+void playReceiveTone();
        
 #endif

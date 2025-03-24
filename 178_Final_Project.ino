@@ -1,7 +1,7 @@
 #include "board_setup.h"
 
 LiquidCrystal *lcd;
-SoftwareSerial hc12(18, 19);
+SoftwareSerial hc12(3, 4);
 
 void setup() {
   Serial.begin(9600);
@@ -42,8 +42,8 @@ void loop() {
         //     Serial.print(input[i]);
         //     Serial.print(", ");
       }
-  }
+  
   break;
   check(hc12, lcd);
-}
+  }
 }

@@ -250,6 +250,7 @@ int receive(LiquidCrystal *lcd, SoftwareSerial hc12) {
 
     lcd->setCursor(0, 0);
     lcd->print("Message Received! :)");
+    playReceiveTone();
     delay(250);
     lcd->setCursor(1, 0);
     lcd->print("Press select to read");
@@ -262,10 +263,15 @@ int receive(LiquidCrystal *lcd, SoftwareSerial hc12) {
                 for (int i = 0; i < ARR_SIZE; i++) {
                     lcd->setCursor(0, i);
                     lcd->print(word[i]);
+                    Serial.print(word[i]);
+                    Serial.print(" ");
                 }
+                Serial.print("\n");
                 for (int i = 0; i < ARR_SIZE; i++) {
                     lcd->setCursor(1, i);
                     lcd->print(code[i]);
+                    Serial.print(code[i]);
+                    Serial.print(" ");
                 }
                 delay(500);
                 pressed = 1;
@@ -282,7 +288,7 @@ void send(LiquidCrystal *lcd, Queue *queue, SoftwareSerial hc12, char text[]) {
     lcd->print("Sending...");
     delay(500);
     toNum(text, queue);
-    Serial.println("\nQueue\n");
+    //Serial.println("\nQueue\n");
     printQ(queue);
 
     pItem temp = (pItem)malloc(sizeof(Item));
@@ -304,7 +310,9 @@ void send(LiquidCrystal *lcd, Queue *queue, SoftwareSerial hc12, char text[]) {
         delay(50);
         check(hc12, lcd);
     }
+    lcd->clear();
     lcd->print("Message sent!");
+    playSendTone();
     delay(500);
     ReturnToMenu(lcd);
 }
@@ -325,5 +333,19 @@ void ReturnToMenu(LiquidCrystal *lcd) {
             delay(250);
             break;
         }
+    }
+}
+
+void playSendTone() {
+    tone(BUZZER_PIN, 1000, 200);
+    delay(250);
+    tone(BUZZER_PIN, 1200, 200);
+}
+
+void playReceiveTone() {
+    int melody[] = {262, 330, 392, 523};
+    for (int i = 0; i < 4; i++) {
+        tone(BUZZER_PIN, melody[i], 200);
+        delay(250);
     }
 }
