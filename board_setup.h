@@ -12,7 +12,7 @@
 #define PIND6       6 
 #define PIND7       7  
 #define BUTTONPIN   A0
-#define BUZZER_PIN   2
+#define BUZZER_PIN   12
 
 #include <Wire.h>
 #include <Arduino.h>

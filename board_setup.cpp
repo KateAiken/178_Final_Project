@@ -250,6 +250,7 @@ int receive(LiquidCrystal *lcd, SoftwareSerial hc12) {
 
     lcd->setCursor(0, 0);
     lcd->print("Message Received! :)");
+    Serial.print("Message Received");
     playReceiveTone();
     delay(250);
     lcd->setCursor(1, 0);

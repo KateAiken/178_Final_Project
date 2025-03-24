@@ -13,6 +13,10 @@ void setup() {
   lcd->setCursor(0, 0);
   lcd->print("Loading...");
   delay(1000);
+  
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, HIGH);
+
 }
 
 void loop() {
