@@ -227,6 +227,7 @@ int receive(LiquidCrystal *lcd, SoftwareSerial hc12) {
 
     char incomingChar = hc12.read();
 
+    Serial.println("Check");
     if (incomingChar == '<') {
         receiving = true;
         index = 0;
@@ -320,6 +321,7 @@ void send(LiquidCrystal *lcd, Queue *queue, SoftwareSerial hc12, char text[]) {
 
 void checkMessages(SoftwareSerial hc12, LiquidCrystal *lcd) {
     if (hc12.available()) {
+        Serial.println("Message Available");
         receive(lcd, hc12);
     }
 }
