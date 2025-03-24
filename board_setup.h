@@ -48,7 +48,7 @@ int receive(LiquidCrystal *lcd, SoftwareSerial hc12);
 
 void send(LiquidCrystal *lcd, Queue *queue, SoftwareSerial hc12, char text[]);
 
-void check(SoftwareSerial hc12, LiquidCrystal *lcd);
+void checkMessages(SoftwareSerial hc12, LiquidCrystal *lcd);
 
 void ReturnToMenu(LiquidCrystal *lcd);
 

@@ -309,7 +309,7 @@ void send(LiquidCrystal *lcd, Queue *queue, SoftwareSerial hc12, char text[]) {
         hc12.print(message);
         temp = temp->next;
         delay(50);
-        check(hc12, lcd);
+        checkMessages(hc12, lcd);
     }
     lcd->clear();
     lcd->print("Message sent!");
@@ -318,7 +318,7 @@ void send(LiquidCrystal *lcd, Queue *queue, SoftwareSerial hc12, char text[]) {
     ReturnToMenu(lcd);
 }
 
-void check(SoftwareSerial hc12, LiquidCrystal *lcd) {
+void checkMessages(SoftwareSerial hc12, LiquidCrystal *lcd) {
     if (hc12.available()) {
         receive(lcd, hc12);
     }

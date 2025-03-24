@@ -1,7 +1,9 @@
 #include "board_setup.h"
 
 LiquidCrystal *lcd;
-SoftwareSerial hc12(3, 4);
+SoftwareSerial hc12(10, 11);
+
+const int NODE_ID = 1;
 
 void setup() {
   Serial.begin(9600);
@@ -22,7 +24,7 @@ void setup() {
 void loop() {
   char input[ARR_SIZE] = { '\0' };
   Queue *q = CreateQueue();
-  check(hc12, lcd);
+  checkMessages(hc12, lcd);
 
   switch (Menu(lcd)) {
     delay(250);
@@ -48,6 +50,5 @@ void loop() {
       }
   
   break;
-  check(hc12, lcd);
   }
 }
