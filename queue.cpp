@@ -1,9 +1,9 @@
 #include "queue.h"
-//#include "morse.h"
 
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <Arduino.h>
 
 pQueue CreateQueue(void) {
     pQueue pnew = (pQueue)malloc(sizeof(struct queue));
@@ -78,13 +78,18 @@ void printQ(pQueue queue) {
         for (int i = 0; i < ARR_SIZE; i++) {
             if (temp->word[i] != END) {
                 printf("%d ", temp->word[i]);
+                Serial.print(temp->word[i]);
+                Serial.print(" ");
             } else {
                 break;
             }
         }
         printf(" <-- ");
+        Serial.print(" <-- ");
         temp = temp->next;
         counter++;
     }
     printf("END");
+    Serial.print("END");
 }
+
