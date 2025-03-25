@@ -1,13 +1,16 @@
 #include "board_setup.h"
 
-const int NODE_ID = 1;
+
 
 void setup() {
+
   Serial.begin(9600);
   hc12.begin(9600);
 
-  lcd = InitLCD(PINRS, PINEN, PIND4, PIND5, PIND6, PIND7, LCD_WIDTH, LCD_HEIGHT);
-
+  //lcd = InitLCD(PINRS, PINEN, PIND4, PIND5, PIND6, PIND7, LCD_WIDTH, LCD_HEIGHT);
+  //LiquidCrystal *lcd(8, 9, 4, 5, 6, 7);
+//SoftwareSerial hc12(10, 11);
+  lcd->begin(16,2);
   lcd->clear();
   lcd->setCursor(0, 0);
   lcd->print("Loading...");

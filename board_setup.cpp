@@ -2,13 +2,8 @@
 #include "morse.h"
 
 Button button;
-
-LiquidCrystal *InitLCD(int pin_rs, int pin_en, int pin_d4, int pin_d5,
-                       int pin_d6, int pin_d7, int lcd_width, int lcd_height) {
-    LiquidCrystal *lcd = new LiquidCrystal(pin_rs, pin_en, pin_d4, pin_d5, pin_d6, pin_d7);
-    lcd->begin(lcd_width, lcd_height);
-    return lcd;
-}
+LiquidCrystal *lcd = new LiquidCrystal(8, 9, 4, 5, 6, 7);
+SoftwareSerial hc12(10, 11);
 
 void Check() {
     int x = analogRead(A0);
@@ -340,14 +335,19 @@ void ReturnToMenu() {
 
 void playSendTone() {
     tone(BUZZER_PIN, 1000, 200);
+    digitalWrite(LED_BUILTIN, LOW);
     delay(250);
     tone(BUZZER_PIN, 1200, 200);
+    digitalWrite(LED_BUITIN, HIGH);
+
 }
 
 void playReceiveTone() {
     int melody[] = {262, 330, 392, 523};
     for (int i = 0; i < 4; i++) {
+        digitalWrite(LED_BUILTIN, LOW);
         tone(BUZZER_PIN, melody[i], 200);
+        digitalWrite(LED_BUILTIN, HIGH);
         delay(250);
     }
 }

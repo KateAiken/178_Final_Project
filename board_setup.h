@@ -29,14 +29,10 @@
 #define EXIT_OK         0
 #define EXIT_ERROR     -1
 
-
+extern SoftwareSerial hc12;
+extern LiquidCrystal *lcd;
 enum Button       {none, right, left, up, down, select};
 
-LiquidCrystal* InitLCD( int pin_rs, int pin_en, int pin_d4, int pin_d5, 
-                        int pin_d6, int pin_d7, int lcd_width, int lcd_height);
-                       
-LiquidCrystal *lcd;
-SoftwareSerial hc12(10, 11);
 
 void Check();
 
