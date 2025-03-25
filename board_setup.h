@@ -34,23 +34,25 @@ enum Button       {none, right, left, up, down, select};
 
 LiquidCrystal* InitLCD( int pin_rs, int pin_en, int pin_d4, int pin_d5, 
                         int pin_d6, int pin_d7, int lcd_width, int lcd_height);
+                       
+LiquidCrystal *lcd;
+SoftwareSerial hc12(10, 11);
 
+void Check();
 
-void Check(LiquidCrystal *lcd);
+int Menu();
 
-int Menu(LiquidCrystal *lcd);
+int getCode(char text[]);
 
-int getCode(LiquidCrystal *lcd, char text[]);
+int getText(char text[]);
 
-int getText(LiquidCrystal *lcd, char text[]);
+int receive();
 
-int receive(LiquidCrystal *lcd, SoftwareSerial hc12);
+void send( Queue *queue, char text[]);
 
-void send(LiquidCrystal *lcd, Queue *queue, SoftwareSerial hc12, char text[]);
+void checkMessages();
 
-void checkMessages(SoftwareSerial hc12, LiquidCrystal *lcd);
-
-void ReturnToMenu(LiquidCrystal *lcd);
+void ReturnToMenu();
 
 void playSendTone();
 

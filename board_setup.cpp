@@ -27,8 +27,8 @@ void Check() {
     // Serial.println(x);
 }
 
-int Menu(LiquidCrystal *lcd) {
-    int menu_option = 1; // 1:Morse 2:Text 3:Recieve
+int Menu() {
+    int menu_option = 1; 
 
     lcd->clear();
     lcd->setCursor(0, 0);
@@ -40,8 +40,8 @@ int Menu(LiquidCrystal *lcd) {
     lcd->print("Send Code");
 
     while (1) {
-        // Serial.print("In Menu");
-        // Serial.println(menu_option);
+
+        checkMessages();
 
         Check();
         lcd->setCursor(0, 1);
@@ -49,12 +49,12 @@ int Menu(LiquidCrystal *lcd) {
         if (button != none) {
             if (button == right || button == up) {
                 menu_option++;
-                if (menu_option > 3)
+                if (menu_option > 2)
                     menu_option = 1;
             } else if (button == left || button == down) {
                 menu_option--;
                 if (menu_option < 1)
-                    menu_option = 3;
+                    menu_option = 2;
             } else if (button == select) {
                 delay(250);
                 return menu_option;
@@ -69,16 +69,13 @@ int Menu(LiquidCrystal *lcd) {
             case 2:
                 lcd->print("Send Word");
                 break;
-            case 3:
-                lcd->print("Recive   ");
-                break;
             }
             delay(250);
         }
     }
 }
 
-int getCode(LiquidCrystal *lcd, char text[]) {
+int getCode(char text[]) {
     int current_value = 0, cursor_pos = 0;
     int code[ARR_SIZE] = {0};
 
@@ -148,7 +145,7 @@ int getCode(LiquidCrystal *lcd, char text[]) {
     }
 }
 
-int getText(LiquidCrystal *lcd, char text[]) {
+int getText(char text[]) {
     int current_value = 64, cursor_pos = 0;
     int code[ARR_SIZE];
     for (int i = 0; i < ARR_SIZE; i++) {
@@ -215,7 +212,7 @@ int getText(LiquidCrystal *lcd, char text[]) {
     }
 }
 
-int receive(LiquidCrystal *lcd, SoftwareSerial hc12) {
+int receive() {
     int pressed = 0;
     int receiving = 0;
     int index = 0;
@@ -278,13 +275,13 @@ int receive(LiquidCrystal *lcd, SoftwareSerial hc12) {
                 delay(500);
                 pressed = 1;
             } else if (button == select && !pressed) {
-                ReturnToMenu(lcd);
+                ReturnToMenu();
             }
         }
     }
 }
 
-void send(LiquidCrystal *lcd, Queue *queue, SoftwareSerial hc12, char text[]) {
+void send(Queue *queue, char text[]) {
     lcd->clear();
     lcd->setCursor(0, 0);
     lcd->print("Sending...");
@@ -310,23 +307,25 @@ void send(LiquidCrystal *lcd, Queue *queue, SoftwareSerial hc12, char text[]) {
         hc12.print(message);
         temp = temp->next;
         delay(50);
-        checkMessages(hc12, lcd);
+        checkMessages();
     }
     lcd->clear();
     lcd->print("Message sent!");
     playSendTone();
     delay(500);
-    ReturnToMenu(lcd);
+    ReturnToMenu();
 }
 
-void checkMessages(SoftwareSerial hc12, LiquidCrystal *lcd) {
+void checkMessages() {
+    //Serial.println("Checking for a message");
     if (hc12.available()) {
         Serial.println("Message Available");
-        receive(lcd, hc12);
+        receive();
     }
+    else{return;}
 }
 
-void ReturnToMenu(LiquidCrystal *lcd) {
+void ReturnToMenu() {
     lcd->setCursor(0, 1);
     lcd->print("Return to MENU");
 
