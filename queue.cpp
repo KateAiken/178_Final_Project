@@ -89,7 +89,7 @@ void printQ(pQueue queue) {
         temp = temp->next;
         counter++;
     }
-    printf("END");
-    Serial.print("END");
+    printf("END\n");
+    Serial.println("END");
 }
 
