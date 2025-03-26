@@ -225,17 +225,18 @@ int receive() {
     lcd->clear();
     lcd->setCursor(0, 0);
     lcd->print("Message Received! :)");
-    Serial.print("Message Received");
+    Serial.println("Message Received");
     playReceiveTone();
     delay(250);
-    lcd->setCursor(1, 0);
-    lcd->print("Press select to read");
+    lcd->setCursor(0, 0);
+    lcd->print("Press select");
 
     while (1) {
         Check();
         if (button != none) {
             if (button == select && !pressed) {
                 delay(250);
+                lcd->clear();
                 lcd->setCursor(0,0);
                 lcd->print(incomingChar);
                 Serial.print(incomingChar);
