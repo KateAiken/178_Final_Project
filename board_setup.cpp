@@ -241,6 +241,7 @@ int receive() {
     }
     toMorse(code, word, received);
 
+    lcd->clear();
     lcd->setCursor(0, 0);
     lcd->print("Message Received! :)");
     Serial.print("Message Received");
@@ -252,7 +253,7 @@ int receive() {
     while (1) {
         Check();
         if (button != none) {
-            if (button == select && pressed) {
+            if (button == select && !pressed) {
                 delay(250);
                 for (int i = 0; i < ARR_SIZE; i++) {
                     lcd->setCursor(0, i);
@@ -269,7 +270,7 @@ int receive() {
                 }
                 delay(500);
                 pressed = 1;
-            } else if (button == select && !pressed) {
+            } else if (button == select && pressed) {
                 ReturnToMenu();
             }
         }
@@ -277,6 +278,7 @@ int receive() {
 }
 
 void send(Queue *queue, char text[]) {
+    hc12.print("Testing");
     lcd->clear();
     lcd->setCursor(0, 0);
     lcd->print("Sending...");
@@ -338,7 +340,7 @@ void playSendTone() {
     digitalWrite(LED_BUILTIN, LOW);
     delay(250);
     tone(BUZZER_PIN, 1200, 200);
-    digitalWrite(LED_BUITIN, HIGH);
+    digitalWrite(LED_BUILTIN, HIGH);
 
 }
 
