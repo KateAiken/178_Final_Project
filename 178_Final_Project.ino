@@ -1,7 +1,5 @@
 #include "board_setup.h"
 
-
-
 void setup() {
 
   Serial.begin(9600);

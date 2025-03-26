@@ -217,29 +217,10 @@ int receive() {
     char received[ARR_SIZE];
     char receivedData[ARR_SIZE];
 
-    char incomingChar = hc12.read();
+    int incomingChar = hc12.read();
 
-    Serial.println("Check");
-    if (incomingChar == '<') {
-        receiving = true;
-        index = 0;
-        memset(receivedData, 0, ARR_SIZE);
-    } else if (incomingChar == '>') {
-        receiving = false;
-        receivedData[index] = '\0';
 
-        char *token = strtok(receivedData, ",");
-
-        for (int i = 0; i < ARR_SIZE && token != NULL; i++) {
-            received[i] = atoi(token);
-            token = strtok(NULL, ",");
-        }
-    } else if (receiving) {
-        for (index; index < ARR_SIZE; index++) {
-            receivedData[index] = incomingChar;
-        }
-    }
-    toMorse(code, word, received);
+    //toMorse(code, word, received);
 
     lcd->clear();
     lcd->setCursor(0, 0);
@@ -255,19 +236,22 @@ int receive() {
         if (button != none) {
             if (button == select && !pressed) {
                 delay(250);
-                for (int i = 0; i < ARR_SIZE; i++) {
-                    lcd->setCursor(0, i);
-                    lcd->print(word[i]);
-                    Serial.print(word[i]);
-                    Serial.print(" ");
-                }
-                Serial.print("\n");
-                for (int i = 0; i < ARR_SIZE; i++) {
-                    lcd->setCursor(1, i);
-                    lcd->print(code[i]);
-                    Serial.print(code[i]);
-                    Serial.print(" ");
-                }
+                lcd->setCursor(0,0);
+                lcd->print(incomingChar);
+                Serial.print(incomingChar);
+                // for (int i = 0; i < ARR_SIZE; i++) {
+                //     lcd->setCursor(0, i);
+                //     // lcd->print(word[i]);
+                //     // Serial.print(word[i]);
+                //     // Serial.print(" ");
+                // }
+                // Serial.print("\n");
+                // for (int i = 0; i < ARR_SIZE; i++) {
+                //     lcd->setCursor(1, i);
+                //     // lcd->print(code[i]);
+                //     // Serial.print(code[i]);
+                //     // Serial.print(" ");
+                // }
                 delay(500);
                 pressed = 1;
             } else if (button == select && pressed) {
@@ -287,24 +271,28 @@ void send(Queue *queue, char text[]) {
     //Serial.println("\nQueue\n");
     printQ(queue);
 
-    pItem temp = (pItem)malloc(sizeof(Item));
-    temp = queue->front;
-    while (temp->next != NULL) {
-        char message[ARR_SIZE];
-        message[0] = '<';
-        int pos = 1;
-        for (int i = 0; i < ARR_SIZE; i++) {
-            pos += sprintf(&message[pos], "%d", text[i]);
-            if (i < ARR_SIZE - 1) {
-                message[pos++] = ',';
-            }
-        }
-        message[pos++] = '>';
-        message[pos] = '\0';
-        hc12.print(message);
-        temp = temp->next;
-        delay(50);
+    // pItem temp = (pItem)malloc(sizeof(Item));
+    // temp = queue->front;
+    // while (temp->next != NULL) {
+    //     char message[ARR_SIZE];
+    //     message[0] = '<';
+    //     int pos = 1;
+    //     for (int i = 0; i < ARR_SIZE; i++) {
+    //         pos += sprintf(&message[pos], "%d", text[i]);
+    //         if (i < ARR_SIZE - 1) {
+    //             message[pos++] = ',';
+    //         }
+    //     }
+    //     message[pos++] = '>';
+    //     message[pos] = '\0';
+    //     hc12.print(message);
+    //     temp = temp->next;
+    //     delay(50);
         checkMessages();
+    //}
+    for(int i=0; i < ARR_SIZE; i++){
+        hc12.println(text[i]);
+        Serial.println(text[i]);
     }
     lcd->clear();
     lcd->print("Message sent!");
