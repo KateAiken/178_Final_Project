@@ -1,9 +1,11 @@
 #include "board_setup.h"
 #include "morse.h"
 
-Button button;
+
 LiquidCrystal *lcd = new LiquidCrystal(8, 9, 4, 5, 6, 7);
 SoftwareSerial hc12(10, 11);
+Button button;
+
 
 void Check() {
     int x = analogRead(A0);
@@ -23,7 +25,7 @@ void Check() {
 }
 
 int Menu() {
-    int menu_option = 1; 
+    int menu_option = 1;
 
     lcd->clear();
     lcd->setCursor(0, 0);
@@ -44,12 +46,12 @@ int Menu() {
         if (button != none) {
             if (button == right || button == up) {
                 menu_option++;
-                if (menu_option > 2)
+                if (menu_option > 3)
                     menu_option = 1;
             } else if (button == left || button == down) {
                 menu_option--;
                 if (menu_option < 1)
-                    menu_option = 2;
+                    menu_option = 3;
             } else if (button == select) {
                 delay(250);
                 return menu_option;
@@ -63,6 +65,9 @@ int Menu() {
                 break;
             case 2:
                 lcd->print("Send Word");
+                break;
+            case 3:
+                lcd->print("HC12 Setup");
                 break;
             }
             delay(250);
@@ -208,19 +213,19 @@ int getText(char text[]) {
 }
 
 int receive() {
-    int pressed = 0;
-    int receiving = 0;
-    int index = 0;
+    // int pressed = 0;
+    // int receiving = 0;
+    // int index = 0;
 
-    char code[ARR_SIZE];
-    char word[ARR_SIZE];
-    char received[ARR_SIZE];
-    char receivedData[ARR_SIZE];
+    // char code[ARR_SIZE];
+    // char word[ARR_SIZE];
+    // char received[ARR_SIZE];
+    // int receivedData[ARR_SIZE];
+    char receivedData;
 
-    int incomingChar = hc12.read();
+    // int i = 0;
 
-
-    //toMorse(code, word, received);
+    // toMorse(code, word, received);
 
     lcd->clear();
     lcd->setCursor(0, 0);
@@ -228,54 +233,76 @@ int receive() {
     Serial.println("Message Received");
     playReceiveTone();
     delay(250);
-    lcd->setCursor(0, 0);
-    lcd->print("Press select");
+    // lcd->clear();
+    // lcd->setCursor(0, 0);
+    // lcd->print("Press select");
+    // lcd->setCursor(0, 1);
+    // lcd->print("to read...");
 
-    while (1) {
-        Check();
-        if (button != none) {
-            if (button == select && !pressed) {
-                delay(250);
-                lcd->clear();
-                lcd->setCursor(0,0);
-                lcd->print(incomingChar);
-                Serial.print(incomingChar);
-                // for (int i = 0; i < ARR_SIZE; i++) {
-                //     lcd->setCursor(0, i);
-                //     // lcd->print(word[i]);
-                //     // Serial.print(word[i]);
-                //     // Serial.print(" ");
-                // }
-                // Serial.print("\n");
-                // for (int i = 0; i < ARR_SIZE; i++) {
-                //     lcd->setCursor(1, i);
-                //     // lcd->print(code[i]);
-                //     // Serial.print(code[i]);
-                //     // Serial.print(" ");
-                // }
-                delay(500);
-                pressed = 1;
-            } else if (button == select && pressed) {
-                ReturnToMenu();
-            }
-        }
+    //    while (1) {
+    //         Check();
+    //         if (button != none) {
+    //             if (button == select && !pressed) {
+    //                 delay(250);
+
+    lcd->clear();
+    lcd->setCursor(0, 0);
+    while (hc12.available()) {
+
+        receivedData = hc12.read();
+        lcd->print(receivedData);
+        Serial.print(receivedData);
+        // i++;
     }
+    ReturnToMenu();
+    delay(1000);
+    // for (int i = 0; i < ARR_SIZE; i++) {
+    //     lcd->setCursor(0, i);
+    //     // lcd->print(word[i]);
+    //     // Serial.print(word[i]);
+    //     // Serial.print(" ");
+    // }
+    // Serial.print("\n");
+    // for (int i = 0; i < ARR_SIZE; i++) {
+    //     lcd->setCursor(1, i);
+    //     // lcd->print(code[i]);
+    //     // Serial.print(code[i]);
+    //     // Serial.print(" ");
+    // }
+    //     delay(500);
+    //     pressed = 1;
+    // } else if (button == select && pressed) {
+    //     ReturnToMenu();
+    // }
+    //}
+    // }
 }
 
 void send(Queue *queue, char text[]) {
-    hc12.print("Testing");
+    // char message[ARR_SIZE];
+
     lcd->clear();
     lcd->setCursor(0, 0);
     lcd->print("Sending...");
     delay(500);
     toNum(text, queue);
-    //Serial.println("\nQueue\n");
+    // Serial.println("\nQueue\n");
     printQ(queue);
 
     // pItem temp = (pItem)malloc(sizeof(Item));
     // temp = queue->front;
+    int num = queue->front->word[0];
+    hc12.println(num);
+    Serial.println(num);
     // while (temp->next != NULL) {
-    //     char message[ARR_SIZE];
+
+    // for (int i = 0; i < ARR_SIZE && message[i] != END; i++) {
+    //     message[i] = temp->word[i];
+    //     hc12.println(message[i]);
+    //     Serial.print(message[i]);
+    //     Serial.print(" ");
+    // }
+
     //     message[0] = '<';
     //     int pos = 1;
     //     for (int i = 0; i < ARR_SIZE; i++) {
@@ -287,14 +314,11 @@ void send(Queue *queue, char text[]) {
     //     message[pos++] = '>';
     //     message[pos] = '\0';
     //     hc12.print(message);
-    //     temp = temp->next;
-    //     delay(50);
-        checkMessages();
-    //}
-    for(int i=0; i < ARR_SIZE; i++){
-        hc12.println(text[i]);
-        Serial.println(text[i]);
-    }
+    // temp = temp->next;
+    // delay(50);
+    // checkMessages();
+    // }
+
     lcd->clear();
     lcd->print("Message sent!");
     playSendTone();
@@ -303,12 +327,13 @@ void send(Queue *queue, char text[]) {
 }
 
 void checkMessages() {
-    //Serial.println("Checking for a message");
+    // Serial.println("Checking for a message");
     if (hc12.available()) {
         Serial.println("Message Available");
         receive();
+    } else {
+        return;
     }
-    else{return;}
 }
 
 void ReturnToMenu() {
@@ -330,7 +355,6 @@ void playSendTone() {
     delay(250);
     tone(BUZZER_PIN, 1200, 200);
     digitalWrite(LED_BUILTIN, HIGH);
-
 }
 
 void playReceiveTone() {
