@@ -93,7 +93,7 @@ void print(char arrChar[], int arrInt[], int length) {
     printf("\n");
 }
 
-void toMorse(char code[] , char word[], char received[]){
+void toMorse(char code[] , char word[], int received[]){
     for(int i = 0; i < ARR_SIZE; i++){
         word[i] = (char)received[i];
     }

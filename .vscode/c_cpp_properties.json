@@ -4,8 +4,8 @@
             "name": "Mac",
             "compilerPath": "/usr/bin/clang",
             "includePath": [
-                "${workspaceFolder}/**",
-                "/Applications/Arduino.app/Contents/Java/hardware/arduino/avr/cores/arduino"
+                "${workspaceFolder}"
+
             ],
             "defines": [
                 "${myDefines}"

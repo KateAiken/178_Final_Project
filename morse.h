@@ -26,6 +26,6 @@ void translate(char word[], int num[]);
 
 void print(char arrChar[], int arrInt[], int length);
 
-void toMorse(char code[] , char word[], char received[]);
+void toMorse(char code[] , char word[], int received[]);
 
 #endif

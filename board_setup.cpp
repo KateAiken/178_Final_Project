@@ -1,11 +1,9 @@
 #include "board_setup.h"
 #include "morse.h"
 
-
 LiquidCrystal *lcd = new LiquidCrystal(8, 9, 4, 5, 6, 7);
 SoftwareSerial hc12(10, 11);
 Button button;
-
 
 void Check() {
     int x = analogRead(A0);
@@ -213,19 +211,15 @@ int getText(char text[]) {
 }
 
 int receive() {
-    // int pressed = 0;
+    int pressed = 0;
     // int receiving = 0;
     // int index = 0;
 
-    // char code[ARR_SIZE];
-    // char word[ARR_SIZE];
+    char code[ARR_SIZE];
+    char word[ARR_SIZE];
     // char received[ARR_SIZE];
-    // int receivedData[ARR_SIZE];
-    char receivedData;
-
-    // int i = 0;
-
-    // toMorse(code, word, received);
+    int receivedData[ARR_SIZE];
+    // char receivedData;
 
     lcd->clear();
     lcd->setCursor(0, 0);
@@ -233,101 +227,87 @@ int receive() {
     Serial.println("Message Received");
     playReceiveTone();
     delay(250);
-    // lcd->clear();
-    // lcd->setCursor(0, 0);
-    // lcd->print("Press select");
-    // lcd->setCursor(0, 1);
-    // lcd->print("to read...");
-
-    //    while (1) {
-    //         Check();
-    //         if (button != none) {
-    //             if (button == select && !pressed) {
-    //                 delay(250);
-
     lcd->clear();
     lcd->setCursor(0, 0);
-    while (hc12.available()) {
+    lcd->print("Press select");
+    lcd->setCursor(0, 1);
+    lcd->print("to read...");
 
-        receivedData = hc12.read();
-        lcd->print(receivedData);
-        Serial.print(receivedData);
-        // i++;
+    while (1) {
+        Check();
+        if (button != none) {
+            if (button == select && pressed) {
+                delay(250);
+
+                int i = 0;
+                while (hc12.available()) {
+                    receivedData[i] = hc12.read();
+                    // lcd->print(receivedData);
+                    // Serial.print(receivedData);
+                    i++;
+                }
+                toMorse(code, word, receivedData);
+
+                for (int i = 0; i < ARR_SIZE; i++) {
+                    lcd->setCursor(0, i);
+                    lcd->print(word[i]);
+                    Serial.print(word[i]);
+                    Serial.print(" ");
+                }
+                Serial.print("\n");
+                for (int i = 0; i < ARR_SIZE; i++) {
+                    lcd->setCursor(1, i);
+                    lcd->print(code[i]);
+                    Serial.print(code[i]);
+                    Serial.print(" ");
+
+                    delay(500);
+                    pressed = 1;
+                }
+            } else if (button == select && pressed) {
+                ReturnToMenu();
+            }
+            lcd->clear();
+            lcd->setCursor(0, 0);
+        }
     }
-    ReturnToMenu();
-    delay(1000);
-    // for (int i = 0; i < ARR_SIZE; i++) {
-    //     lcd->setCursor(0, i);
-    //     // lcd->print(word[i]);
-    //     // Serial.print(word[i]);
-    //     // Serial.print(" ");
-    // }
-    // Serial.print("\n");
-    // for (int i = 0; i < ARR_SIZE; i++) {
-    //     lcd->setCursor(1, i);
-    //     // lcd->print(code[i]);
-    //     // Serial.print(code[i]);
-    //     // Serial.print(" ");
-    // }
-    //     delay(500);
-    //     pressed = 1;
-    // } else if (button == select && pressed) {
-    //     ReturnToMenu();
-    // }
-    //}
-    // }
 }
 
 void send(Queue *queue, char text[]) {
-    // char message[ARR_SIZE];
+    int message[ARR_SIZE];
 
     lcd->clear();
     lcd->setCursor(0, 0);
     lcd->print("Sending...");
     delay(500);
     toNum(text, queue);
-    // Serial.println("\nQueue\n");
     printQ(queue);
 
-    // pItem temp = (pItem)malloc(sizeof(Item));
-    // temp = queue->front;
-    int num = queue->front->word[0];
-    hc12.println(num);
-    Serial.println(num);
-    // while (temp->next != NULL) {
+    pItem temp = (pItem)malloc(sizeof(Item));
+    temp = queue->front;
 
-    // for (int i = 0; i < ARR_SIZE && message[i] != END; i++) {
-    //     message[i] = temp->word[i];
-    //     hc12.println(message[i]);
-    //     Serial.print(message[i]);
-    //     Serial.print(" ");
-    // }
+    // int num = queue->front->word[0];
+    // hc12.println(num);
+    // Serial.println(num);
 
-    //     message[0] = '<';
-    //     int pos = 1;
-    //     for (int i = 0; i < ARR_SIZE; i++) {
-    //         pos += sprintf(&message[pos], "%d", text[i]);
-    //         if (i < ARR_SIZE - 1) {
-    //             message[pos++] = ',';
-    //         }
-    //     }
-    //     message[pos++] = '>';
-    //     message[pos] = '\0';
-    //     hc12.print(message);
-    // temp = temp->next;
-    // delay(50);
-    // checkMessages();
-    // }
+    while (temp->next != NULL) {
 
-    lcd->clear();
-    lcd->print("Message sent!");
-    playSendTone();
-    delay(500);
-    ReturnToMenu();
+        for (int i = 0; i < ARR_SIZE && message[i] != END; i++) {
+            message[i] = temp->word[i];
+            hc12.println(message[i]);
+            Serial.print(message[i]);
+            Serial.print(" ");
+        }
+
+        lcd->clear();
+        lcd->print("Message sent!");
+        playSendTone();
+        delay(500);
+        ReturnToMenu();
+    }
 }
 
 void checkMessages() {
-    // Serial.println("Checking for a message");
     if (hc12.available()) {
         Serial.println("Message Available");
         receive();

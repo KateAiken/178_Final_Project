@@ -79,7 +79,7 @@ void printQ(pQueue queue) {
             if (temp->word[i] != END) {
                 printf("%d ", temp->word[i]);
                 Serial.print(temp->word[i]);
-                Serial.print(" ");
+                //Serial.print(" ");
             } else {
                 break;
             }
