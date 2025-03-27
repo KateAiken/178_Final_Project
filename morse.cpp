@@ -93,23 +93,26 @@ void print(char arrChar[], int arrInt[], int length) {
     printf("\n");
 }
 
-void toMorse(char code[] , char word[], int received[]){
-    for(int i = 0; i < ARR_SIZE; i++){
-        word[i] = (char)received[i];
+void toMorse(char code[], char word[], int received[]) {
+    for (int i = 0; i < ARR_SIZE && received[i] != -1; i++) {
+        if (received[i] != END) {
+            word[i] = (char)received[i];
+        }
     }
-    for(int i = 0; i <ARR_SIZE; i++){
-        for(int j = 0; j <= 26; j++){
-            if(received[i] == translation[j][0]){
-                for(int k = 1; k<6; k++){
-                    if(translation[j][k] != WORDEND){
-                        code[i] = translation[j][k];
+    int pos = 0;
+    for (int i = 0; i < ARR_SIZE && received[i] != -1; i++) {
+        if (received[i] == SPACE) {
+            code[pos++] = SPACE;}
+            for (int j = 0; j <= 26; j++) {
+                if (received[i] == translation[j][0]) {
+                    for (int k = 1; k < 6 && translation[j][k] != WORDEND; k++) {
+                        code[pos++] = translation[j][k];
                     }
                 }
             }
-        }
+        
     }
 }
-
 
 int translation[26][6] = {{65, DOT, DASH, WORDEND, WORDEND, WORDEND},     // A
                           {66, DASH, DOT, DOT, DOT, WORDEND},             // B

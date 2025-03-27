@@ -91,5 +91,6 @@ void printQ(pQueue queue) {
     }
     printf("END\n");
     Serial.println("END");
+    free(temp);
 }
 

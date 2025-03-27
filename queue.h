@@ -4,11 +4,12 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "morse.h"    
 
 #define EXIT_OK 0
 #define EXIT_ERR -1
-#define ARR_SIZE 50
+#define ARR_SIZE 25
 
 typedef struct item {
     struct item *next;

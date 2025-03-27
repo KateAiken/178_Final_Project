@@ -12,7 +12,7 @@
 #define SPACE 32
 #define END 0
 #define WORDEND 48
-#define ARR_SIZE 50
+#define ARR_SIZE 25
 
 struct queue;
 

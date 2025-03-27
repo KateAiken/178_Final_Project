@@ -33,22 +33,11 @@ void loop() {
     case 1:
         if (getCode(input) == EXIT_OK) {
             send(q, input);
-            // ReturnToMenu(lcd);
-            //  Serial.println("Array\n");
-            //  for (int i = 0; i < ARR_SIZE; i++) {
-            //      Serial.print(input[i]);
-            //      Serial.print(", ");
-            //  }
         }
         break;
     case 2:
         if (getText(input) == EXIT_OK) {
             send(q, input);
-            // ReturnToMenu(lcd);
-            //  Serial.println("Array\n");
-            //  for (int i = 0; i < ARR_SIZE; i++) {
-            //      Serial.print(input[i]);
-            //      Serial.print(", ");
         }
         break;
     case 3:
