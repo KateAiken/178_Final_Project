@@ -19,7 +19,6 @@ void Check() {
         button = select;
     else
         button = none;
-
 }
 
 int Menu() {
@@ -217,7 +216,7 @@ int receive() {
 
     char code[ARR_SIZE] = {END};
     char word[ARR_SIZE] = {END};
-    
+
     lcd->clear();
     lcd->setCursor(0, 0);
     lcd->print("Message Received! :)");
@@ -242,7 +241,6 @@ int receive() {
                 receivedData.toCharArray(received, ARR_SIZE);
                 for (int i = 0; i < ARR_SIZE; i++) {
                     processedData[i] = (int)received[i];
-                    
                 }
                 toMorse(code, word, processedData);
 
@@ -253,7 +251,7 @@ int receive() {
                     Serial.print(word[i]);
                     Serial.print("->");
                 }
-                for (int i = 0; i < ARR_SIZE && code[i] != END ; i++) {
+                for (int i = 0; i < ARR_SIZE && code[i] != END; i++) {
                     lcd->setCursor(i, 1);
                     lcd->print(code[i]);
                     Serial.print(code[i]);
@@ -263,7 +261,6 @@ int receive() {
             } else if (button == select && pressed) {
                 ReturnToMenu();
             }
-
         }
     }
 }

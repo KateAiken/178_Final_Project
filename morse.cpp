@@ -102,15 +102,15 @@ void toMorse(char code[], char word[], int received[]) {
     int pos = 0;
     for (int i = 0; i < ARR_SIZE && received[i] != -1; i++) {
         if (received[i] == SPACE) {
-            code[pos++] = SPACE;}
-            for (int j = 0; j <= 26; j++) {
-                if (received[i] == translation[j][0]) {
-                    for (int k = 1; k < 6 && translation[j][k] != WORDEND; k++) {
-                        code[pos++] = translation[j][k];
-                    }
+            code[pos++] = SPACE;
+        }
+        for (int j = 0; j <= 26; j++) {
+            if (received[i] == translation[j][0]) {
+                for (int k = 1; k < 6 && translation[j][k] != WORDEND; k++) {
+                    code[pos++] = translation[j][k];
                 }
             }
-        
+        }
     }
 }
 
@@ -127,7 +127,7 @@ int translation[26][6] = {{65, DOT, DASH, WORDEND, WORDEND, WORDEND},     // A
                           {75, DASH, DOT, DASH, WORDEND, WORDEND},        // K
                           {76, DOT, DASH, DOT, DOT, WORDEND},             // L
                           {77, DASH, DASH, WORDEND, WORDEND, WORDEND},    // M
-                          {78, DASH, DASH, DOT, WORDEND, WORDEND},        // N
+                          {78, DASH, DOT, WORDEND, WORDEND, WORDEND},     // N
                           {79, DASH, DASH, DASH, WORDEND, WORDEND},       // O
                           {80, DOT, DASH, DASH, DOT, WORDEND},            // P
                           {81, DASH, DASH, DOT, DASH, WORDEND},           // Q

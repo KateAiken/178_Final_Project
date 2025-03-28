@@ -1,9 +1,9 @@
 #include "queue.h"
 
+#include <Arduino.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <Arduino.h>
 
 pQueue CreateQueue(void) {
     pQueue pnew = (pQueue)malloc(sizeof(struct queue));
@@ -79,7 +79,6 @@ void printQ(pQueue queue) {
             if (temp->word[i] != END) {
                 printf("%d ", temp->word[i]);
                 Serial.print(temp->word[i]);
-                //Serial.print(" ");
             } else {
                 break;
             }
@@ -93,4 +92,3 @@ void printQ(pQueue queue) {
     Serial.println("END");
     free(temp);
 }
-
