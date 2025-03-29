@@ -1,5 +1,5 @@
 {
-    "board": "arduino:avr:mega",
+    "board": "arduino:avr:uno",
     "port": "/dev/tty.usbmodem101",
     "path": "/Applications/Arduino.app/Contents/Java/libraries"
 }

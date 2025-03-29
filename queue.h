@@ -20,7 +20,9 @@ typedef struct queue {
     pItem front;
     pItem back;
     int count;
-} Queue, *pQueue;
+}Queue,*pQueue;
+
+extern pQueue q; 
 
 pQueue CreateQueue(void);
 

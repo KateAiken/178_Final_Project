@@ -1,16 +1,19 @@
 #include "morse.h"
+#include "bst.h"
 #include "queue.h"
 
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 
+Stack path = (Stack)malloc(sizeof(struct stack));
+
 void getTextTerminal(char text[]) {
 
     printf("Enter Sentence: ");
     fgets(text, ARR_SIZE - 1, stdin);
     if (text[(strlen(text)) - 1] == '\n') {
-        text[(strlen(text)) - 1] = '\0';
+        text[(strlen(text)) - 1] = END;
     }
 }
 
@@ -19,8 +22,8 @@ void toNum(char sentance[], Queue *queue) {
     int word_int[ARR_SIZE] = {END};
 
     int k = 0;
-    for (int i = 0, j = 0; i < 100 && sentance[k] != END; i++, j++) {
-        if (sentance[i] == 10 || sentance[i] == 47) {
+    for (int i = 0, j = 0; i < ARR_SIZE && sentance[k] != END; i++, j++) {
+        if (sentance[i] == NEWLINE || sentance[i] == 47) {
             sentance[i] = END;
         }
         if (sentance[i] != SPACE && sentance[i] != END) {
@@ -43,31 +46,44 @@ void toNum(char sentance[], Queue *queue) {
 
 void translate(char word[], int num[]) {
     if (word[0] == DOT || word[0] == DASH) {
-        int row = 0, colT = 0, colW = 0, colw = 0, letters = 0;
-        for (row = 0; row < 26; row++) {
-            for (colT = 1, colW = colw; colT < 6; colT++, colW++) {
-                int numTrans = translation[row][colT];
-                int numWord = word[colW];
-                int numTrans2 = translation[row][colT + 1];
-                int numWord2 = word[colW + 1];
-                if (translation[row][colT] != word[colW]) {
-                    break;
+        int temp[4] = {END};
+        int count = 0;
+        for (int i = 0, j = 0; i < ARR_SIZE && word[i] != END; i++, j++) {
+            if (word[i] != WORDEND) {
+                temp[j] = word[i];
+                Serial.println(temp[j]);
+            } else {
+                Serial.println("Search");
+                pNode node = letterSearch(temp, 0, root);
+                num[count] = node->letter;
+                Serial.println("find");
+                Serial.println(num[count]);
+                count++;
+                for (int k = 0; k < 4; k++) {
+                    temp[k] = END;
                 }
-                if (word[colW] == END) {
-                    return;
-                } else if ((word[colW] == WORDEND || word[colW] == END)) {
-                    num[letters] = translation[row][0];
-                    row = -1;
-                    colw = colW + 1;
-                    letters++;
-                    break;
-                }
+                j = -1;
             }
         }
     } else {
         for (int i = 0; i < ARR_SIZE && word[i + 1] != END; i++) {
             num[i] = toupper(word[i]);
         }
+    }
+}
+
+pNode letterSearch(int code[], int depth, pNode current) {
+    Serial.println(code[depth]);
+    Serial.println(current->letter);
+    if (code[depth] == DASH) {
+        Serial.println("Dash");
+        return letterSearch(code, depth + 1, current->dash);
+    } else if (code[depth] == DOT) {
+        Serial.println("Dot");
+        return letterSearch(code, depth + 1, current->dot);
+    } else {
+        // Serial.println(current->letter);
+        return current;
     }
 }
 
@@ -94,24 +110,48 @@ void print(char arrChar[], int arrInt[], int length) {
 }
 
 void toMorse(char code[], char word[], int received[]) {
-    for (int i = 0; i < ARR_SIZE && received[i] != -1; i++) {
+    for (int i = 0; i < ARR_SIZE && received[i] != END; i++) {
         if (received[i] != END) {
             word[i] = (char)received[i];
         }
     }
     int pos = 0;
-    for (int i = 0; i < ARR_SIZE && received[i] != -1; i++) {
-        if (received[i] == SPACE) {
+    path->top = -1;
+    for (int i = 0; i < ARR_SIZE && received[i] != END; i++) {
+        if (received[i] == SPACE)
             code[pos++] = SPACE;
-        }
-        for (int j = 0; j <= 26; j++) {
-            if (received[i] == translation[j][0]) {
-                for (int k = 1; k < 6 && translation[j][k] != WORDEND; k++) {
-                    code[pos++] = translation[j][k];
-                }
+        else if (codeSearch(root, received[i])) {
+            int inc = path->top;
+            for (int j = inc; j >= 0; j--) {
+                code[j + pos] = pop();
             }
+            pos += inc+1;
+            path->top = -1;
         }
     }
+}
+
+int codeSearch(pNode current, int target) {
+    if (!current)
+        return 0;
+    if (current->letter == target)
+        return 1;
+    push(DOT);
+    if (codeSearch(current->dot, target))
+        return 1;
+    pop();
+    push(DASH);
+    if (codeSearch(current->dash, target))
+        return 1;
+    pop();
+    return 0;
+}
+
+void push(int value) {
+    path->stack[++(path->top)] = value;
+}
+int pop() {
+    return path->stack[(path->top)--];
 }
 
 int translation[26][6] = {{65, DOT, DASH, WORDEND, WORDEND, WORDEND},     // A
@@ -137,6 +177,6 @@ int translation[26][6] = {{65, DOT, DASH, WORDEND, WORDEND, WORDEND},     // A
                           {85, DOT, DOT, DASH, WORDEND, WORDEND},         // U
                           {86, DOT, DOT, DOT, DASH, WORDEND},             // V
                           {87, DOT, DASH, DASH, WORDEND, WORDEND},        // W
-                          {88, DASH, DOT, DOT, DASH, WORDEND},            // Y
-                          {89, DASH, DOT, DASH, DASH, WORDEND},           // X
+                          {88, DASH, DOT, DOT, DASH, WORDEND},            // X
+                          {89, DASH, DOT, DASH, DASH, WORDEND},           // Y
                           {90, DASH, DASH, DOT, DOT, WORDEND}};           // Z

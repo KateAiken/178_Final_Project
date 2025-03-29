@@ -1,18 +1,8 @@
 #include "board_setup.h"
 
 void setup() {
-
     Serial.begin(9600);
     hc12.begin(9600);
-
-    // lcd = InitLCD(PINRS, PINEN, PIND4, PIND5, PIND6, PIND7, LCD_WIDTH, LCD_HEIGHT);
-    // LiquidCrystal *lcd(8, 9, 4, 5, 6, 7);
-    // SoftwareSerial hc12(10, 11);
-    lcd->begin(16, 2);
-    lcd->clear();
-    lcd->setCursor(0, 0);
-    lcd->print("Loading...");
-    delay(1000);
 
     pinMode(SETPIN, OUTPUT);
     digitalWrite(SETPIN, HIGH);
@@ -21,11 +11,18 @@ void setup() {
     digitalWrite(LED_BUILTIN, HIGH);
     Serial.println("print test");
     Serial.flush();
+
+    lcd->begin(16, 2);
+    lcd->clear();
+    lcd->setCursor(0, 0);
+    lcd->print("Loading...");
+    delay(1000);
 }
 
 void loop() {
-    char input[ARR_SIZE] = {'\0'};
-    Queue *q = CreateQueue();
+    char input[ARR_SIZE] = {END};
+    q = CreateQueue();
+    root = createBST();
     checkMessages();
 
     switch (Menu()) {
@@ -56,8 +53,9 @@ void loop() {
             Check();
             if (button != none && button == select) {
                 digitalWrite(SETPIN, HIGH);
-                ReturnToMenu();
+                break;
             }
         }
+        ReturnToMenu();
     }
 }

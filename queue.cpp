@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+pQueue q = NULL;
+
 pQueue CreateQueue(void) {
     pQueue pnew = (pQueue)malloc(sizeof(struct queue));
     if (pnew != NULL) {
@@ -50,31 +52,42 @@ int Dequeue(pQueue queue, int arr[]) {
         return EXIT_ERR;
     }
 
-    else if (queue->front == queue->back) {
+    pItem temp = queue->front;
+
+    for (int i = 0; i < ARR_SIZE; i++) {
+        arr[i] = temp->word[i];
+    }
+
+    queue->front = queue->front->next;
+    if (queue->front == NULL) {
         queue->back = NULL;
     }
-    for (int i = 0; i < ARR_SIZE; i++) {
-        arr[i] = queue->front->word[i];
-    }
-    queue->front = queue->front->next;
+
+    free(temp);
     queue->count--;
 
     return EXIT_OK;
 }
 
 int DequeueAll(pQueue queue) {
-    queue->count = 0;
+    pItem current = queue->front;
+    while (current != NULL) {
+        pItem temp = current;
+        current = current->next;
+        free(temp);
+    }
+
     queue->front = NULL;
     queue->back = NULL;
-
+    queue->count = 0;
     return EXIT_OK;
 }
 
 void printQ(pQueue queue) {
-    pItem temp = (pItem)malloc(sizeof(Item));
-    temp = queue->front;
+    pItem temp = queue->front;
     int counter = 0;
-    while (queue->count > counter) {
+
+    while (counter < queue->count && temp != NULL) {
         for (int i = 0; i < ARR_SIZE; i++) {
             if (temp->word[i] != END) {
                 printf("%d ", temp->word[i]);
@@ -90,5 +103,6 @@ void printQ(pQueue queue) {
     }
     printf("END\n");
     Serial.println("END");
-    free(temp);
+
 }
+

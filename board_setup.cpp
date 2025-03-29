@@ -131,7 +131,7 @@ int getCode(char text[]) {
                 break;
             case 3: // END
                 lcd->print("0");
-                text[cursor_pos] = '0';
+                text[cursor_pos] = WORDEND;
                 break;
             }
 
@@ -209,10 +209,11 @@ int getText(char text[]) {
 
 int receive() {
     int pressed = 0;
+    int endofString = 0;
 
     String receivedData;
     char received[ARR_SIZE];
-    int processedData[ARR_SIZE] = {-1};
+    int processedData[ARR_SIZE] = {END};
 
     char code[ARR_SIZE] = {END};
     char word[ARR_SIZE] = {END};
@@ -245,24 +246,30 @@ int receive() {
                 toMorse(code, word, processedData);
 
                 lcd->clear();
-                for (int i = 0; i < ARR_SIZE && ((word[i] >= 65 && word[i] <= 90) || word[i] == SPACE); i++) {
+                for (int i = 0; i < ARR_SIZE && word[i] != END; i++) {
                     lcd->setCursor(i, 0);
                     lcd->print(word[i]);
                     Serial.print(word[i]);
                     Serial.print("->");
                 }
+                Serial.print("\n");
+                Serial.println("Code");
+
                 for (int i = 0; i < ARR_SIZE && code[i] != END; i++) {
                     lcd->setCursor(i, 1);
                     lcd->print(code[i]);
                     Serial.print(code[i]);
+                    Serial.print(">");
                 }
-                delay(2000);
+                delay(500);
                 pressed = 1;
             } else if (button == select && pressed) {
-                ReturnToMenu();
+                break;
             }
         }
     }
+    delay(250);
+    ReturnToMenu();
 }
 
 void send(Queue *queue, char text[]) {
@@ -275,8 +282,7 @@ void send(Queue *queue, char text[]) {
     toNum(text, queue);
     printQ(queue);
 
-    pItem temp = (pItem)malloc(sizeof(Item));
-    temp = queue->front;
+    pItem temp = queue->front;
 
     int counter = 0;
     while (queue->count > counter) {
@@ -287,7 +293,7 @@ void send(Queue *queue, char text[]) {
         counter++;
         temp = temp->next;
     }
-    send += '\n';
+    send += '\0';
 
     hc12.println(send);
     Serial.print(send);
@@ -312,11 +318,19 @@ void checkMessages() {
 void ReturnToMenu() {
     lcd->setCursor(0, 1);
     lcd->print("Return to MENU");
-
     while (true) {
         Check();
         if (button == select) {
             delay(250);
+            int menu_option = 1;
+            lcd->clear();
+            lcd->setCursor(0, 0);
+            lcd->print("Select Action");
+            lcd->setCursor(12, 2);
+            lcd->print("MENU");
+
+            lcd->setCursor(0, 1);
+            lcd->print("Send Code");
             break;
         }
     }

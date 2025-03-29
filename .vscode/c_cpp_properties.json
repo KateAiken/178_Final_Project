@@ -4,8 +4,9 @@
             "name": "Mac",
             "compilerPath": "/usr/bin/clang",
             "includePath": [
-                "${workspaceFolder}"
-
+                "${workspaceFolder}",
+                "${workspaceFolder}*/",
+                "/Applications/Arduino.app/Contents/Java/hardware/arduino/avr/cores/arduino"
             ],
             "defines": [
                 "${myDefines}"
@@ -20,7 +21,6 @@
             "browse": {
                 "path": [
                     "/Applications/Arduino.app/Contents/Java/hardware/arduino/avr/cores/arduino",
-                    //"/Applications/Arduino.app/Contents/Java/hardware/arduino/avr/cores/arduino//Applications/Arduino.app/Contents/Java/hardware/arduino/avr/cores/arduino/Arduino.h",
                     "${workspaceFolder}"
                 ],
                 "limitSymbolsToIncludedHeaders": true
