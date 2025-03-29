@@ -1,11 +1,10 @@
 #ifndef QUEUE_H_
 #define QUEUE_H_
 
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "morse.h"    
+#include "morse.h"
 
 #define EXIT_OK 0
 #define EXIT_ERR -1
@@ -20,19 +19,17 @@ typedef struct queue {
     pItem front;
     pItem back;
     int count;
-}Queue,*pQueue;
+} Queue, *pQueue;
 
-extern pQueue q; 
+extern pQueue q;
 
 pQueue CreateQueue(void);
 
 pItem CreateItem(int arr[]);
 
-bool IsQEmpty(pQueue queue);
+int IsQEmpty(pQueue queue);
 
 int Enqueue(pQueue queue, pItem item);
-
-int Dequeue(pQueue queue, int arr[]);
 
 int DequeueAll(pQueue queue);
 

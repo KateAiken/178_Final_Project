@@ -29,17 +29,13 @@ int Menu() {
     lcd->print("Select Action");
     lcd->setCursor(12, 2);
     lcd->print("MENU");
-
     lcd->setCursor(0, 1);
     lcd->print("Send Code");
 
     while (1) {
-
         checkMessages();
-
         Check();
         lcd->setCursor(0, 1);
-
         if (button != none) {
             if (button == right || button == up) {
                 menu_option++;
@@ -53,7 +49,6 @@ int Menu() {
                 delay(250);
                 return menu_option;
             }
-
             lcd->setCursor(0, 1);
             switch (menu_option) {
             case 1:
@@ -74,13 +69,12 @@ int Menu() {
 int getCode(char text[]) {
     int current_value = 0, cursor_pos = 0;
     int code[ARR_SIZE] = {0};
-
     lcd->clear();
     lcd->setCursor(0, 0);
     lcd->print("Enter Morse Code:");
     lcd->setCursor(cursor_pos, 1);
     lcd->cursor();
-
+    lcd->autoscroll();
     while (1) {
         Check();
         if (button != none) {
@@ -112,10 +106,8 @@ int getCode(char text[]) {
                 lcd->noCursor();
                 return EXIT_OK;
             }
-
             lcd->setCursor(cursor_pos, 1);
             delay(250);
-
             switch (current_value) {
             case 0: // SPACE
                 lcd->print(" ");
@@ -134,7 +126,6 @@ int getCode(char text[]) {
                 text[cursor_pos] = WORDEND;
                 break;
             }
-
             lcd->setCursor(cursor_pos, 1);
             delay(250);
         }
@@ -147,7 +138,6 @@ int getText(char text[]) {
     for (int i = 0; i < ARR_SIZE; i++) {
         code[i] = 64;
     }
-
     lcd->clear();
     lcd->setCursor(0, 0);
     lcd->print("Enter Sentance:");
@@ -162,33 +152,26 @@ int getText(char text[]) {
                 if (current_value > 90)
                     current_value = 64;
                 code[cursor_pos] = current_value;
-
             } else if (button == down) {
                 current_value--;
                 if (current_value < 64)
                     current_value = 90;
                 code[cursor_pos] = current_value;
-
             } else if (button == right) {
                 cursor_pos++;
                 current_value = code[cursor_pos];
-
             } else if (button == left) {
                 cursor_pos--;
-
                 if (cursor_pos < 0)
                     cursor_pos = 0;
                 current_value = code[cursor_pos];
-
             } else if (button == select) {
                 delay(250);
                 lcd->noCursor();
                 return EXIT_OK;
             }
-
             lcd->setCursor(cursor_pos, 1);
             delay(250);
-
             switch (current_value) {
             case 64: // SPACE
                 lcd->print(" ");
@@ -200,7 +183,6 @@ int getText(char text[]) {
                 text[cursor_pos] = current_value;
                 break;
             }
-
             lcd->setCursor(cursor_pos, 1);
             delay(250);
         }
@@ -210,11 +192,9 @@ int getText(char text[]) {
 int receive() {
     int pressed = 0;
     int endofString = 0;
-
     String receivedData;
     char received[ARR_SIZE];
     int processedData[ARR_SIZE] = {END};
-
     char code[ARR_SIZE] = {END};
     char word[ARR_SIZE] = {END};
 
@@ -235,16 +215,13 @@ int receive() {
         if (button != none) {
             if (button == select && !pressed) {
                 delay(50);
-
                 receivedData += hc12.readString();
                 Serial.println(receivedData);
-
                 receivedData.toCharArray(received, ARR_SIZE);
                 for (int i = 0; i < ARR_SIZE; i++) {
                     processedData[i] = (int)received[i];
                 }
                 toMorse(code, word, processedData);
-
                 lcd->clear();
                 for (int i = 0; i < ARR_SIZE && word[i] != END; i++) {
                     lcd->setCursor(i, 0);
@@ -252,9 +229,6 @@ int receive() {
                     Serial.print(word[i]);
                     Serial.print("->");
                 }
-                Serial.print("\n");
-                Serial.println("Code");
-
                 for (int i = 0; i < ARR_SIZE && code[i] != END; i++) {
                     lcd->setCursor(i, 1);
                     lcd->print(code[i]);
@@ -268,13 +242,13 @@ int receive() {
             }
         }
     }
+    LEDBuzzerMap(code);
     delay(250);
     ReturnToMenu();
 }
 
 void send(Queue *queue, char text[]) {
     String send;
-
     lcd->clear();
     lcd->setCursor(0, 0);
     lcd->print("Sending...");
@@ -283,7 +257,6 @@ void send(Queue *queue, char text[]) {
     printQ(queue);
 
     pItem temp = queue->front;
-
     int counter = 0;
     while (queue->count > counter) {
         for (int i = 0; i < ARR_SIZE && temp->word[i] != END; i++) {
@@ -294,7 +267,7 @@ void send(Queue *queue, char text[]) {
         temp = temp->next;
     }
     send += '\0';
-
+    DequeueAll(q);
     hc12.println(send);
     Serial.print(send);
     Serial.print(" ");
@@ -335,20 +308,21 @@ void ReturnToMenu() {
         }
     }
 }
-void LEDBuzzerMap(char code[]){
 
-    for (int i = 0; i < ARR_SIZE && code[i] != END ; i++) {
-        if(code[i] == '.'){
+void LEDBuzzerMap(char code[]) {
+
+    for (int i = 0; i < ARR_SIZE && code[i] != END; i++) {
+        if (code[i] == '.') {
             tone(BUZZER_PIN, 1000, 200);
-            digitalWrite(LED_BUILTIN, HIGH);
+            digitalWrite(LEDPIN, HIGH);
             delay(200);
-            digitalWrite(LED_BUILTIN, LOW);
+            digitalWrite(LEDPIN, LOW);
         }
-        if(code[i] == '-'){
+        if (code[i] == '-') {
             tone(BUZZER_PIN, 1000, 500);
-            digitalWrite(LED_BUILTIN, HIGH);
+            digitalWrite(LEDPIN, HIGH);
             delay(500);
-            digitalWrite(LED_BUILTIN, LOW);
+            digitalWrite(LEDPIN, LOW);
         }
     }
 }

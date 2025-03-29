@@ -1,14 +1,13 @@
 #include "bst.h"
 #include "morse.h"
 
-#include <stdio.h>
 #include <Arduino.h>
+#include <stdio.h>
 
 pNode root = NULL;
 
 pNode createBST() {
     pNode root = (pNode)malloc(sizeof(Node));
-    root->parent = NULL;
     root->letter = -1;
     root->dot = NULL;
     root->dash = NULL;
@@ -19,19 +18,16 @@ pNode createBST() {
 
 pNode buildBST(pNode current, int depth) {
     if (depth == DEPTH) {
-
         return current;
     }
 
     pNode tempDot = (pNode)malloc(sizeof(Node));
     pNode tempDash = (pNode)malloc(sizeof(Node));
 
-    tempDot->parent = current;
     tempDot->letter = END;
     tempDot->dot = NULL;
     tempDot->dash = NULL;
 
-    tempDash->parent = current;
     tempDash->letter = END;
     tempDash->dot = NULL;
     tempDash->dash = NULL;
@@ -52,20 +48,34 @@ void addNode(int row, int depth, pNode current) {
     }
 }
 
-void traversal(pNode current) {
-    if (current == NULL) {
-        return;
-    }
-    traversal(current->dot);
-
-    printf("%c\n", current->letter);
-    Serial.print((char)current->letter);
-
-    traversal(current->dash);
-}
-
 void fillBST(pNode root) {
     for (int row = 0; row < 26; row++) {
         addNode(row, 0, root);
     }
+}
+
+pNode letterSearch(int code[], int depth, pNode current) {
+    if (code[depth] == DASH) {
+        return letterSearch(code, depth + 1, current->dash);
+    } else if (code[depth] == DOT) {
+        return letterSearch(code, depth + 1, current->dot);
+    } else {
+        return current;
+    }
+}
+
+int codeSearch(pNode current, int target) {
+    if (!current)
+        return 0;
+    if (current->letter == target)
+        return 1;
+    push(DOT);
+    if (codeSearch(current->dot, target))
+        return 1;
+    pop();
+    push(DASH);
+    if (codeSearch(current->dash, target))
+        return 1;
+    pop();
+    return 0;
 }

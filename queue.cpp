@@ -1,7 +1,6 @@
 #include "queue.h"
 
 #include <Arduino.h>
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -25,14 +24,11 @@ pItem CreateItem(int arr[]) {
         }
         pnew->next = NULL;
     } else {
-        // fprintf (stderr, "ERROR: Failed to create queue %d\n", i);
-        // Serial.print("ERROR: Failed to create new item ");
-        // Serial.println(".");
     }
     return pnew;
 }
 
-bool IsQEmpty(pQueue queue) { return queue->count == 0; }
+int IsQEmpty(pQueue queue) { return queue->count == 0; }
 
 int Enqueue(pQueue queue, pItem item) {
     if (IsQEmpty(queue)) {
@@ -44,28 +40,6 @@ int Enqueue(pQueue queue, pItem item) {
     }
 
     queue->count++;
-    return EXIT_OK;
-}
-
-int Dequeue(pQueue queue, int arr[]) {
-    if (IsQEmpty(queue)) {
-        return EXIT_ERR;
-    }
-
-    pItem temp = queue->front;
-
-    for (int i = 0; i < ARR_SIZE; i++) {
-        arr[i] = temp->word[i];
-    }
-
-    queue->front = queue->front->next;
-    if (queue->front == NULL) {
-        queue->back = NULL;
-    }
-
-    free(temp);
-    queue->count--;
-
     return EXIT_OK;
 }
 
@@ -103,6 +77,4 @@ void printQ(pQueue queue) {
     }
     printf("END\n");
     Serial.println("END");
-
 }
-
