@@ -335,6 +335,23 @@ void ReturnToMenu() {
         }
     }
 }
+void LEDBuzzerMap(char code[]){
+
+    for (int i = 0; i < ARR_SIZE && code[i] != END ; i++) {
+        if(code[i] == '.'){
+            tone(BUZZER_PIN, 1000, 200);
+            digitalWrite(LED_BUILTIN, HIGH);
+            delay(200);
+            digitalWrite(LED_BUILTIN, LOW);
+        }
+        if(code[i] == '-'){
+            tone(BUZZER_PIN, 1000, 500);
+            digitalWrite(LED_BUILTIN, HIGH);
+            delay(500);
+            digitalWrite(LED_BUILTIN, LOW);
+        }
+    }
+}
 
 void playSendTone() {
     tone(BUZZER_PIN, 1000, 200);
