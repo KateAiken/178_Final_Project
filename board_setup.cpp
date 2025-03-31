@@ -1,11 +1,14 @@
+// Include headerfiles 
 #include "board_setup.h"
 #include "morse.h"
 
+// Declare and intianlize external variables
 LiquidCrystal *lcd = new LiquidCrystal(8, 9, 4, 5, 6, 7);
 SoftwareSerial hc12(10, 11);
 Button button;
 
-void Check() {
+
+void Check() { // Checks button pin and compares value to send return which button was pressed
     int x = analogRead(A0);
     if (x < 60)
         button = right;
@@ -21,7 +24,7 @@ void Check() {
         button = none;
 }
 
-int Menu() {
+int Menu() { // Scrolls through menu and returns selected option
     int menu_option = 1;
 
     lcd->clear();
@@ -66,7 +69,7 @@ int Menu() {
     }
 }
 
-int getCode(char text[]) {
+int getCode(char text[]) { // Gets morse code from user through LCD screen and fills array with message
     int current_value = 0, cursor_pos = 0;
     int code[ARR_SIZE] = {0};
     lcd->clear();
@@ -132,7 +135,7 @@ int getCode(char text[]) {
     }
 }
 
-int getText(char text[]) {
+int getText(char text[]) { // Gets text from user through LCD screen and fills array with message 
     int current_value = 64, cursor_pos = 0;
     int code[ARR_SIZE];
     for (int i = 0; i < ARR_SIZE; i++) {
@@ -147,25 +150,25 @@ int getText(char text[]) {
     while (1) {
         Check();
         if (button != none) {
-            if (button == up) {
+            if (button == up) { // Increase Letter 
                 current_value++;
                 if (current_value > 90)
                     current_value = 64;
                 code[cursor_pos] = current_value;
-            } else if (button == down) {
+            } else if (button == down) { // Decrease Letter
                 current_value--;
                 if (current_value < 64)
                     current_value = 90;
                 code[cursor_pos] = current_value;
-            } else if (button == right) {
+            } else if (button == right) {  // Move Right
                 cursor_pos++;
                 current_value = code[cursor_pos];
-            } else if (button == left) {
+            } else if (button == left) { // Move Left
                 cursor_pos--;
                 if (cursor_pos < 0)
                     cursor_pos = 0;
                 current_value = code[cursor_pos];
-            } else if (button == select) {
+            } else if (button == select) { // Send Message
                 delay(250);
                 lcd->noCursor();
                 return EXIT_OK;
@@ -177,7 +180,7 @@ int getText(char text[]) {
                 lcd->print(" ");
                 text[cursor_pos] = SPACE;
                 break;
-            case 'A' ... 'Z': // DASH
+            case 'A' ... 'Z': // LETTER
                 char letter = (char)current_value;
                 lcd->print(letter);
                 text[cursor_pos] = current_value;
@@ -189,7 +192,7 @@ int getText(char text[]) {
     }
 }
 
-int receive() {
+int receive() { // Function to recive message from hc12 module and sort it back into a readable form
     int pressed = 0;
     int endofString = 0;
     String receivedData;
@@ -215,13 +218,15 @@ int receive() {
         if (button != none) {
             if (button == select && !pressed) {
                 delay(50);
-                receivedData += hc12.readString();
+                receivedData += hc12.readString(); // Collect message from hc12
                 Serial.println(receivedData);
                 receivedData.toCharArray(received, ARR_SIZE);
-                for (int i = 0; i < ARR_SIZE; i++) {
+                for (int i = 0; i < ARR_SIZE; i++) { // Sort data into int array 
                     processedData[i] = (int)received[i];
                 }
-                toMorse(code, word, processedData);
+                toMorse(code, word, processedData); // Translate data into mors code and text
+                
+                // Output arrays to LCD
                 lcd->clear();
                 for (int i = 0; i < ARR_SIZE && word[i] != END; i++) {
                     lcd->setCursor(i, 0);
@@ -237,7 +242,7 @@ int receive() {
                 }
                 delay(500);
                 pressed = 1;
-            } else if (button == select && pressed) {
+            } else if (button == select && pressed) { // Exit message if select is pressed
                 break;
             }
         }
@@ -247,7 +252,7 @@ int receive() {
     ReturnToMenu();
 }
 
-void send(Queue *queue, char text[]) {
+void send(Queue *queue, char text[]) { //Function that sorts through queue and sends message to hc12 modules
     String send;
     lcd->clear();
     lcd->setCursor(0, 0);
@@ -258,7 +263,7 @@ void send(Queue *queue, char text[]) {
 
     pItem temp = queue->front;
     int counter = 0;
-    while (queue->count > counter) {
+    while (queue->count > counter) { // Sort queue into string to send to hc12
         for (int i = 0; i < ARR_SIZE && temp->word[i] != END; i++) {
             send += (char)temp->word[i];
         }
@@ -279,7 +284,7 @@ void send(Queue *queue, char text[]) {
     free(temp);
 }
 
-void checkMessages() {
+void checkMessages() { // Checks if a message is available
     if (hc12.available()) {
         Serial.println("Message Available");
         receive();
@@ -288,7 +293,7 @@ void checkMessages() {
     }
 }
 
-void ReturnToMenu() {
+void ReturnToMenu() { // Returns user to menu options
     lcd->setCursor(0, 1);
     lcd->print("Return to MENU");
     while (true) {
@@ -309,7 +314,7 @@ void ReturnToMenu() {
     }
 }
 
-void LEDBuzzerMap(char code[]) {
+void LEDBuzzerMap(char code[]) { // Outputs morse code to buzzer and light
 
     for (int i = 0; i < ARR_SIZE && code[i] != END; i++) {
         if (code[i] == '.') {
@@ -327,7 +332,7 @@ void LEDBuzzerMap(char code[]) {
     }
 }
 
-void playSendTone() {
+void playSendTone() { // Plays send noise and flashes light when a message is sent
     tone(BUZZER_PIN, 1000, 200);
     digitalWrite(LED_BUILTIN, LOW);
     delay(250);
@@ -335,7 +340,7 @@ void playSendTone() {
     digitalWrite(LED_BUILTIN, HIGH);
 }
 
-void playReceiveTone() {
+void playReceiveTone() { // Plays receive noise and flashes light when a message is received
     int melody[] = {262, 330, 392, 523};
     for (int i = 0; i < 4; i++) {
         digitalWrite(LED_BUILTIN, LOW);
