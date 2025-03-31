@@ -1,3 +1,9 @@
+/*******************************************************
+morse.h
+
+Header File for morse.ccp
+********************************************************/
+
 // Header file initialization 
 #ifndef MORSE_H_
 #define MORSE_H_

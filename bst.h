@@ -1,3 +1,9 @@
+/*******************************************************
+bst.h
+
+header file for bst.ccp
+********************************************************/
+
 // Header file initialization 
 #ifndef BST_H_
 #define BST_H_

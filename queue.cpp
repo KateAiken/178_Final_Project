@@ -1,3 +1,9 @@
+/*******************************************************
+queue.ccp
+
+Implements Queue Data structure to store Morse code translations
+********************************************************/
+
 // Include headerfiles 
 #include "queue.h"
 

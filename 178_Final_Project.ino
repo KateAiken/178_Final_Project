@@ -1,3 +1,9 @@
+/*******************************************************
+178_Final_Project.ino
+
+PROJECT ENIGMA MAIN CODE FILE
+********************************************************/
+
 // Include headerfiles
 #include "board_setup.h"
 
@@ -50,7 +56,7 @@ void loop() {
         }
         break;
     case 3:
-        // Case 3: USer selected to setup hc12 by puttin it into at mode 
+        // Case 3: USer selected to setup hc12 by puttin it into AT mode 
         lcd->clear();
         lcd->setCursor(0, 0);
         lcd->print("HC12 Setup Mode");

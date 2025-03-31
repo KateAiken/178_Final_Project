@@ -1,3 +1,9 @@
+/*******************************************************
+board_setup.ccp
+
+Menu functions for LCD screem buttons, HC-12 Module, Buzzer and lights
+********************************************************/
+
 // Include headerfiles 
 #include "board_setup.h"
 #include "morse.h"

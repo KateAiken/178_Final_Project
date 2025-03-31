@@ -1,3 +1,9 @@
+/*******************************************************
+bst.ccp
+
+Initilization, creation and searching of the Morse Code Translation BST
+********************************************************/
+
 // Include headerfiles 
 #include "bst.h"
 #include "morse.h"

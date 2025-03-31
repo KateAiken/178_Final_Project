@@ -1,3 +1,9 @@
+/*******************************************************
+queue.h
+
+Header File for queue.ccp
+********************************************************/
+
 // Header file initialization 
 #ifndef QUEUE_H_
 #define QUEUE_H_

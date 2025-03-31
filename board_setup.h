@@ -1,3 +1,9 @@
+/*******************************************************
+board_setup.h
+
+Header File for board_setup.ccp
+********************************************************/
+
 // Header file initialization 
 #ifndef BOARD_SETUP_H_
 #define BOARD_SETUP_H_

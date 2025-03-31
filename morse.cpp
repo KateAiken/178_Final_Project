@@ -1,3 +1,9 @@
+/*******************************************************
+morse.ccp
+
+Encodes and Decondes the Morse code
+********************************************************/
+
 // Include headerfiles 
 #include "morse.h"
 #include "bst.h"
