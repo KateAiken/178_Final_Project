@@ -4,7 +4,7 @@
 
 #define BUZZER_PIN 12
 #define SETPIN 3
-#define LEDPIN 3
+#define LEDPIN 13
 
 // Include Libraries
 #include <Arduino.h>

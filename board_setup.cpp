@@ -77,7 +77,6 @@ int getCode(char text[]) { // Gets morse code from user through LCD screen and f
     lcd->print("Enter Morse Code:");
     lcd->setCursor(cursor_pos, 1);
     lcd->cursor();
-    lcd->autoscroll();
     while (1) {
         Check();
         if (button != none) {
@@ -240,6 +239,7 @@ int receive() { // Function to recive message from hc12 module and sort it back 
                     Serial.print(code[i]);
                     Serial.print(">");
                 }
+                LEDBuzzerMap(code);
                 delay(500);
                 pressed = 1;
             } else if (button == select && pressed) { // Exit message if select is pressed
